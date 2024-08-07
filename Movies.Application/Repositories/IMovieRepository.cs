@@ -13,6 +13,6 @@ public interface IMovieRepository
 
     Task<bool> UpdateAsync(Movie movie);
     
-    Task<bool> DeleteById(Guid id);
+    Task<bool> DeleteByIdAsync(Guid id);
 
 }

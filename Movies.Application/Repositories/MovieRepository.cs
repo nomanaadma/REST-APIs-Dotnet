@@ -27,7 +27,7 @@ public class MovieRepository : IMovieRepository
     {
         var movieIndex = _movies.FindIndex(m => m.Id == movie.Id);
         
-        if (movieIndex != 1)
+        if (movieIndex == -1)
         {
             return Task.FromResult(false);
         }
@@ -37,7 +37,7 @@ public class MovieRepository : IMovieRepository
         
     }
 
-    public Task<bool> DeleteById(Guid id)
+    public Task<bool> DeleteByIdAsync(Guid id)
     {
         var removedCount = _movies.RemoveAll(m => m.Id == id);
         var movieRemove = removedCount > 0;
