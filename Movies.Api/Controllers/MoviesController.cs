@@ -31,8 +31,7 @@ public class MoviesController : ControllerBase
     
     // [Authorize]
     [HttpGet(ApiEndpoints.Movies.Get)]
-    public async Task<IActionResult> Get([FromRoute] string idOrSlug, 
-        [FromServices] LinkGenerator linkGenerator,
+    public async Task<IActionResult> Get([FromRoute] string idOrSlug,
         CancellationToken token)
     {
         var userId = HttpContext.GetUserId();
@@ -45,29 +44,6 @@ public class MoviesController : ControllerBase
             return NotFound();
 
         var response = movie.MapToResponse();
-
-        response.Links.Add(new Link
-        {
-            Href = linkGenerator.GetPathByAction(HttpContext, nameof(Get), values: new {idOrSlug = movie.Id }),
-            Rel = "self",
-            Type = "GET"
-        });
-        
-        response.Links.Add(new Link
-        {
-            Href = linkGenerator.GetPathByAction(HttpContext, nameof(Update), values: new {idOrSlug = movie.Id }),
-            Rel = "self",
-            Type = "UPDATE"
-        });
-        
-        response.Links.Add(new Link
-        {
-            Href = linkGenerator.GetPathByAction(HttpContext, nameof(Delete), values: new {idOrSlug = movie.Id }),
-            Rel = "self",
-            Type = "DELETE"
-        });
-
-        
         return Ok(response);
     }
 
