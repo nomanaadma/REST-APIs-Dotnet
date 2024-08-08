@@ -16,6 +16,8 @@ public static class ApiEndpoints
         
         public const string Rate = $"{Base}/{{id:guid}}/ratings";
         public const string DeleteRating = Rate;
+        
+        // public const string CreateBulk = $"{Base}bulk"; // temp function to bulk insert json data in database
     }
 
     public static class Ratings

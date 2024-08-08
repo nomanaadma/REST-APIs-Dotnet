@@ -173,7 +173,39 @@
 						}
 					},
 					"response": []
-				}
+				},
+				{
+					"name": "Create movies",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:5001/api/moviesbulk",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"moviesbulk"
+							]
+						}
+					},
+					"response": []
+				},
 			]
 		},
 		{

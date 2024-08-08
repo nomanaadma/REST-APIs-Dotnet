@@ -60,4 +60,9 @@ public static class ContractMapping
         });
     }
     
+    // temp function to bulk insert json data in database
+    // public static IEnumerable<Movie> MapToResponse(this IEnumerable<CreateMovieRequest> movies)
+    // {
+    //     return movies.Select(x => x.MapToMovie());
+    // }
 }

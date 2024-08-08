@@ -85,4 +85,22 @@ public class MoviesController : ControllerBase
         return Ok();
     }   
     
+    
+    // temp function to bulk insert json data in database
+    // [Authorize]
+    // [HttpPost(ApiEndpoints.Movies.CreateBulk)]
+    // public async Task<IActionResult> CreateBulk([FromBody] IEnumerable<CreateMovieRequest> request, CancellationToken token)
+    // {
+    //     var movies = request.MapToResponse();
+    //
+    //     foreach (var movie in movies)
+    //     {
+    //         await _movieService.CreateAsync(movie, token);    
+    //     }
+    //     
+    //     Console.WriteLine("Debug");
+    //     return Ok();
+    //     
+    // }
+    
 }
