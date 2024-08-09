@@ -43,6 +43,9 @@ builder.Services.AddAuthorizationBuilder()
             c.User.HasClaim(m => m is { Type: AuthConstants.TrustedClaim, Value: "true" })
         ));
 
+
+builder.Services.AddScoped<ApiKeyAuthFilter>();
+
 builder.Services.AddApiVersioning(x =>
 {
     x.DefaultApiVersion = new ApiVersion(1.0);
