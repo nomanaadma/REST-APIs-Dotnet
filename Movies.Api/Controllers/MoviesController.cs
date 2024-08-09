@@ -1,6 +1,7 @@
 ﻿using Asp.Versioning;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using Movies.Api.Auth;
 using Movies.Contracts.Requests;
 using Movies.Api.Mapping;
@@ -15,11 +16,13 @@ namespace Movies.Api.Controllers;
 public class MoviesController : ControllerBase
 {
     private readonly IMovieService _movieService;
+    private readonly IOutputCacheStore _outputCacheStore;
 
     // ReSharper disable once ConvertToPrimaryConstructor
-    public MoviesController(IMovieService movieService)
+    public MoviesController(IMovieService movieService, IOutputCacheStore outputCacheStore)
     {
         _movieService = movieService;
+        _outputCacheStore = outputCacheStore;
     }
 
     [Authorize(AuthConstants.AdminPolicy)]
@@ -30,6 +33,7 @@ public class MoviesController : ControllerBase
     {
         var movie = request.MapToMovie();
         await _movieService.CreateAsync(movie, token);
+        await _outputCacheStore.EvictByTagAsync("movies", token);
         var response = movie.MapToResponse();
         return CreatedAtAction(nameof(GetV1), new { idOrSlug = movie.Id }, response);
     }
@@ -37,6 +41,8 @@ public class MoviesController : ControllerBase
     // [Authorize]
     [MapToApiVersion(1.0)]
     [HttpGet(ApiEndpoints.Movies.Get)]
+    // [ResponseCache(Duration = 30, VaryByHeader = "Accept, Accept-Encoding", Location = ResponseCacheLocation.Any)]
+    [OutputCache]
     [ProducesResponseType(typeof(MovieResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ValidationFailureResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -59,6 +65,8 @@ public class MoviesController : ControllerBase
     // [Authorize]
     // [AllowAnonymous]
     [HttpGet(ApiEndpoints.Movies.GetAll)]
+    // [ResponseCache(Duration = 30, VaryByQueryKeys = ["title", "year", "sortBy", "page", "pageSize"] ,VaryByHeader = "Accept, Accept-Encoding", Location = ResponseCacheLocation.Any)]
+    [OutputCache(PolicyName = "MovieCache")]
     [ProducesResponseType(typeof(MoviesResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ValidationFailureResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetAll(
@@ -90,6 +98,8 @@ public class MoviesController : ControllerBase
         
         if (updatedMovie is null)
             return NotFound();
+        
+        await _outputCacheStore.EvictByTagAsync("movies", token);
 
         var response = updatedMovie.MapToResponse();
         return Ok(response);
@@ -106,6 +116,8 @@ public class MoviesController : ControllerBase
         var deleted = await _movieService.DeleteByIdAsync(id, token);
         if (!deleted)
             return NotFound();
+        
+        await _outputCacheStore.EvictByTagAsync("movies", token);
 
         return Ok();
     }

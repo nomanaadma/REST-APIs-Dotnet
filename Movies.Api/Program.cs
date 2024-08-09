@@ -48,8 +48,19 @@ builder.Services.AddApiVersioning(x =>
     x.DefaultApiVersion = new ApiVersion(1.0);
     x.AssumeDefaultVersionWhenUnspecified = true;
     x.ReportApiVersions = true;
-    x.ApiVersionReader = new HeaderApiVersionReader("api-version"); // reading api version from header
+    x.ApiVersionReader = new MediaTypeApiVersionReader("api-version"); // reading api version from header
 }).AddMvc().AddApiExplorer();
+
+// builder.Services.AddResponseCaching();
+builder.Services.AddOutputCache(x =>
+{
+    x.AddBasePolicy(c => c.Cache());
+    x.AddPolicy("MovieCache", c => 
+        c.Cache()
+            .Expire(TimeSpan.FromMinutes(1))
+            .SetVaryByQuery(["title", "year", "sortBy", "page", "pageSize"])
+            .Tag("movies"));
+});
 
 builder.Services.AddControllers();
 
@@ -87,6 +98,10 @@ if (app.Environment.IsDevelopment())
 app.MapHealthChecks("/_health");
 
 app.UseHttpsRedirection();
+
+// app.UseCors();
+// app.UseResponseCaching();
+app.UseOutputCache();
 
 app.UseAuthentication();
 app.UseAuthorization();
