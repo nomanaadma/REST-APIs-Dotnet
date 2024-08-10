@@ -36,13 +36,15 @@ builder.Services.AddAuthentication(o =>
 
 builder.Services.AddAuthorizationBuilder()
     .AddPolicy(AuthConstants.AdminPolicy,
-        p => p.RequireClaim(AuthConstants.AdminClaim))
+        p => p.AddRequirements(new AdminAuthRequirement(config["ApiKey"]!)))
     .AddPolicy(AuthConstants.TrustedMember,
-        p => p.RequireAssertion(c =>
-            c.User.HasClaim(m => m is { Type: AuthConstants.AdminClaim, Value: "true" }) ||
-            c.User.HasClaim(m => m is { Type: AuthConstants.TrustedClaim, Value: "true" })
-        ));
-
+         p => p.RequireAssertion(c =>
+             c.User.HasClaim(m => m is { Type: AuthConstants.AdminClaim, Value: "true" }) ||
+             c.User.HasClaim(m => m is { Type: AuthConstants.TrustedClaim, Value: "true" })
+         ));
+//     .AddPolicy(AuthConstants.AdminPolicy,
+//         p => p.RequireClaim(AuthConstants.AdminClaim))
+//     
 
 builder.Services.AddScoped<ApiKeyAuthFilter>();
 
