@@ -55,7 +55,11 @@ builder.Services.AddApiVersioning(x =>
     x.AssumeDefaultVersionWhenUnspecified = true;
     x.ReportApiVersions = true;
     x.ApiVersionReader = new MediaTypeApiVersionReader("api-version"); // reading api version from header
-}).AddMvc().AddApiExplorer();
+})
+//.AddMvc()
+.AddApiExplorer();
+
+builder.Services.AddEndpointsApiExplorer();
 
 // builder.Services.AddResponseCaching();
 builder.Services.AddOutputCache(x =>
@@ -86,6 +90,8 @@ builder.Services.AddDatabase(config["Database:ConnectionString"]);
 
 
 var app = builder.Build();
+
+app.CreateApiVersionSet();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

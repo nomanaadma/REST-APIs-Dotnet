@@ -26,7 +26,10 @@ public static class DeleteMovieEndpoint
 			await outputCacheStore.EvictByTagAsync("movies", token);
 
 			return TypedResults.Ok();
-		}).WithName(Name);
+		}).WithName(Name)
+		.Produces(StatusCodes.Status200OK)
+		.Produces(StatusCodes.Status404NotFound)
+		.RequireAuthorization(AuthConstants.AdminPolicy);
 
 		return app;
 	}

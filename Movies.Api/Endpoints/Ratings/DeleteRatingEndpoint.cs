@@ -19,7 +19,10 @@ public static class DeleteRatingEndpoint
 			var userid = context.GetUserId();
 			var result = await ratingService.DeleteRatingAsync(id, userid!.Value, token);
 			return result ? Results.Ok() : Results.NotFound();
-		}).WithName(Name);
+		}).WithName(Name)
+		.Produces(StatusCodes.Status200OK)
+		.Produces(StatusCodes.Status404NotFound)
+		.RequireAuthorization();
 
 		return app;
 	}
