@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Movies.Api.Sdk;
+using Movies.Api.Sdk.Consumer;
 using Movies.Contracts.Requests;
 using Refit;
 
@@ -8,9 +9,12 @@ using Refit;
 
 var services = new ServiceCollection();
 
-services.AddRefitClient<IMoviesApi>(x => new RefitSettings
+services
+	.AddHttpClient()
+	.AddSingleton<AuthTokenProvider>()
+	.AddRefitClient<IMoviesApi>(x => new RefitSettings
 	{
-		AuthorizationHeaderValueGetter = (_, _) => Task.FromResult("authtoken")
+		AuthorizationHeaderValueGetter = async (_, _) => await x.GetRequiredService<AuthTokenProvider>().GetTokenAsync()
 	})
 	.ConfigureHttpClient(x =>
 		x.BaseAddress = new Uri("https://localhost:5001"));
