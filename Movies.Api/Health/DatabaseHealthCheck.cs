@@ -27,7 +27,7 @@ public class DatabaseHealthCheck : IHealthCheck
         catch (Exception e)
         {
             const string errorMessage = "Database is unhealthy";
-            _logger.LogError(errorMessage);
+            _logger.LogError(e, errorMessage);
             return HealthCheckResult.Unhealthy(errorMessage);
         }
     }
