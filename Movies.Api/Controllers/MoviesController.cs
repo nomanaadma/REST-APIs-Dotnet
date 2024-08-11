@@ -26,7 +26,7 @@ public class MoviesController : ControllerBase
     }
 
     //[Authorize(AuthConstants.AdminPolicy)]
-    [ServiceFilter(typeof(ApiKeyAuthFilter))]
+    // [ServiceFilter(typeof(ApiKeyAuthFilter))]
     [HttpPost(ApiEndpoints.Movies.Create)]
     [ProducesResponseType(typeof(MovieResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ValidationFailureResponse), StatusCodes.Status400BadRequest)]
