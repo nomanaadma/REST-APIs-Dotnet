@@ -6,13 +6,16 @@ using Refit;
 
 // var moviesApi = RestService.For<IMoviesApi>("https://localhost:5001");
 
-var serivces = new ServiceCollection();
+var services = new ServiceCollection();
 
-serivces.AddRefitClient<IMoviesApi>()
+services.AddRefitClient<IMoviesApi>(x => new RefitSettings
+	{
+		AuthorizationHeaderValueGetter = (_, _) => Task.FromResult("authtoken")
+	})
 	.ConfigureHttpClient(x =>
 		x.BaseAddress = new Uri("https://localhost:5001"));
 
-var provider = serivces.BuildServiceProvider();
+var provider = services.BuildServiceProvider();
 
 var moviesApi = provider.GetRequiredService<IMoviesApi>();
 
